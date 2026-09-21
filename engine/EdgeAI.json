@@ -1,0 +1,21 @@
+{
+  "$schema": "interface.json.schema",
+  "jsonrpc": "2.0",
+  "info": {
+    "title": "EdgeAI API",
+    "class": "EdgeAI",
+    "description": "org.rdk.EdgeAI skeleton service (capability registry / pipeline orchestrator scaffold)"
+  },
+  "methods": {
+    "ping": {
+      "summary": "Health check for the EdgeAI engine.",
+      "result": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "string", "example": "ok" },
+          "component": { "type": "string", "example": "org.rdk.EdgeAI" }
+        }
+      }
+    }
+  }
+}
