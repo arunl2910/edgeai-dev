@@ -5,10 +5,27 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 option(EDGEAI_BUILD_ENGINE "Build the core registries + Thunder plugin" ON)
+option(EDGEAI_BUILD_SCHEMA "Build the capability/pipeline/manifest schema loader" ON)
 option(EDGEAI_BUILD_THUNDER_PLUGIN "Build the org.rdk.EdgeAI Thunder plugin (requires WPEFramework SDK)" OFF)
 option(EDGEAI_BUILD_TASK_NODES "Build task-node plugins" ON)
 option(EDGEAI_BUILD_HAL_BSTORM "Build the bstorm HAL backend (requires vendor SDK)" OFF)
 option(EDGEAI_BUILD_TESTS "Build gtest unit tests" OFF)
+
+# nlohmann/json is only needed by schema/loader and by the tests. On the Yocto build this is
+# provided by meta-oe's 'nlohmann-json' recipe (see meta-rdke-edgeai DEPENDS); for local host
+# dev, fall back to fetching it so the schema-loader ticket is buildable without root access.
+if(EDGEAI_BUILD_SCHEMA OR EDGEAI_BUILD_TESTS)
+    find_package(nlohmann_json 3.9 QUIET)
+    if(NOT nlohmann_json_FOUND)
+        include(FetchContent)
+        FetchContent_Declare(
+            nlohmann_json
+            GIT_REPOSITORY https://github.com/nlohmann/json.git
+            GIT_TAG v3.11.3
+        )
+        FetchContent_MakeAvailable(nlohmann_json)
+    endif()
+endif()
 
 if(EDGEAI_BUILD_TESTS)
     include(FetchContent)
@@ -24,6 +41,10 @@ endif()
 
 if(EDGEAI_BUILD_ENGINE)
     add_subdirectory(engine)
+endif()
+
+if(EDGEAI_BUILD_SCHEMA)
+    add_subdirectory(schema/loader)
 endif()
 
 if(EDGEAI_BUILD_TASK_NODES)

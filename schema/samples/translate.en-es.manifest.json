@@ -1,0 +1,7 @@
+{
+  "task": "translate",
+  "io": { "input": "text/plain;lang=en", "output": "text/plain;lang=es" },
+  "pre": ["tokenizer"],
+  "post": ["detokenizer"],
+  "artifact": { "path": "models/translate-en-es.bin", "format": "dummy" }
+}

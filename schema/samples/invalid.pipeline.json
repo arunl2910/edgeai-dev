@@ -1,0 +1,10 @@
+{
+  "pipeline": "media.audio.translate.broken",
+  "nodes": [
+    { "id": "caption-source", "type": "caption-source" },
+    { "id": "defrag" }
+  ],
+  "edges": [
+    { "from": "caption-source", "to": "defrag" }
+  ]
+}

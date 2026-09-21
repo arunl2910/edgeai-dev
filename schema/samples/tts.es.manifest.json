@@ -1,0 +1,7 @@
+{
+  "task": "tts",
+  "io": { "input": "text/plain;lang=es", "output": "audio/pcm;rate=48000" },
+  "pre": ["g2p-es"],
+  "post": ["pcm-encode"],
+  "artifact": { "path": "models/tts-es.bin", "format": "dummy" }
+}

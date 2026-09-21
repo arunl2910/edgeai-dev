@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "EdgeAI Capability Descriptor",
+  "type": "object",
+  "required": ["capability", "version", "task"],
+  "properties": {
+    "capability": { "type": "string", "description": "e.g. media.audio.translate" },
+    "version": { "type": "string" },
+    "task": { "type": "string", "description": "operator task type, e.g. translate, tts" },
+    "io": {
+      "type": "object",
+      "properties": {
+        "input": { "type": "string" },
+        "output": { "type": "string" }
+      }
+    }
+  }
+}

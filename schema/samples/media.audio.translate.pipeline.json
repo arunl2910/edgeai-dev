@@ -1,0 +1,16 @@
+{
+  "pipeline": "media.audio.translate",
+  "nodes": [
+    { "id": "caption-source", "type": "caption-source" },
+    { "id": "defrag", "type": "defrag" },
+    { "id": "translate", "type": "translate", "params": { "src_lang": "en", "tgt_lang": "es" } },
+    { "id": "tts", "type": "tts", "params": { "voice": "es-default" } },
+    { "id": "schedule", "type": "schedule" }
+  ],
+  "edges": [
+    { "from": "caption-source", "to": "defrag" },
+    { "from": "defrag", "to": "translate" },
+    { "from": "translate", "to": "tts" },
+    { "from": "tts", "to": "schedule" }
+  ]
+}
