@@ -1,28 +1,53 @@
 #pragma once
 
-#include <cstdint>
+#include "ParseResult.h"
+
+#include <filesystem>
+#include <istream>
 #include <string>
-#include <vector>
+#include <utility>
 
-namespace edgeai {
-
-// One normalized caption cue, format-agnostic (fed by a .srt sidecar parser today;
-// same struct will be fed by an in-band CEA-608/708/WebVTT tap point later).
-struct CaptionCue
+namespace edgeai
 {
-    int index{0};
-    int64_t start_ms{0};
-    int64_t end_ms{0};
-    std::string speaker;   // empty if none detected
-    std::string text;
+
+struct ParserOptions
+{
+    // When true, a "SPEAKER: text" prefix is extracted into
+    // cue.metadata.speaker_name and stripped from the text.
+    bool extract_metadata{false};
+
+    // Applied to every cue's metadata.language when non-empty.
+    // Language comes from track/catalog context, never inferred from text.
+    std::string default_language;
 };
 
 // Reads a .srt sidecar file and produces an ordered list of CaptionCue.
-// Parsing core for AI-37-05. Not implemented yet (stub).
+// Parsing core for AI-37-05.
 class CaptionSourceNode
 {
 public:
-    std::vector<CaptionCue> parseSrtFile(const std::string& path) const;
+    CaptionSourceNode() = default;
+
+    explicit CaptionSourceNode(ParserOptions options)
+        : mOptions(std::move(options))
+    {
+    }
+
+    [[nodiscard]]
+    ParseResult parseSrtFile(
+        const std::filesystem::path& filePath);
+
+    [[nodiscard]]
+    ParseResult parse(
+        std::istream& stream);
+
+private:
+    static void validateSourceOrder(ParseResult& result);  // before sort
+    static void sortCues(ParseResult& result);             // stable sort
+    static void validateTimeline(ParseResult& result);     // after sort
+
+    ParserOptions mOptions;
 };
 
 } // namespace edgeai
+
